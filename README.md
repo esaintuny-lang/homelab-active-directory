@@ -11,7 +11,7 @@ This home lab demonstrates the deployment of a Windows Server Active Directory e
 | Tool | Purpose |
 |---|---|
 | VirtualBox | Hypervisor / virtualization platform |
-| Windows Server 2022 | Domain Controller + DHCP Server |
+| Windows Server 2019 | Domain Controller + DHCP Server |
 | Windows Client | Domain-joined workstation |
 | Active Directory Domain Services (AD DS) | User/machine management |
 | DHCP Server Role | Automated IP address assignment |
@@ -23,7 +23,7 @@ This home lab demonstrates the deployment of a Windows Server Active Directory e
 
 ```
 +------------------------------+       +-----------------------------+
-|   Windows Server 2022        |       |   Windows Client Machine    |
+|   Windows Server 2019        |       |   Windows Client Machine    |
 |   Role: DC + DHCP Server     | <---> |   Role: Domain Member       |
 |                              |       |                             |
 |   IP: 172.16.0.1 (static)   |       |   IP: 172.16.0.100-200      |
@@ -39,12 +39,12 @@ This home lab demonstrates the deployment of a Windows Server Active Directory e
 
 ### Domain Controller / DHCP Server
 
-- **OS:** Windows Server 2022
+- **OS:** Windows Server 2019
 - **Roles Installed:** Active Directory Domain Services, DHCP Server, DNS Server
 - **Domain Name:** `mydomain.com`
 - **Static IP:** `172.16.0.1`
 - **DHCP Scope:** `172.16.0.100 – 172.16.0.200`
-- **Subnet Mask:** `255.255.0.0`
+- **Subnet Mask:** `255.255.255.0`
 - **Default Gateway:** `172.16.0.1`
 - **DNS:** Points to itself (DC handles name resolution)
 
@@ -60,7 +60,7 @@ This home lab demonstrates the deployment of a Windows Server Active Directory e
 ## 🔧 Steps Performed
 
 1. **Installed VirtualBox** and created two VMs on an Internal Network adapter
-2. **Configured Windows Server 2022**
+2. **Configured Windows Server 2019**
    - Assigned a static IP address
    - Installed the AD DS role and promoted the server to Domain Controller
    - Created the domain `mydomain.com`

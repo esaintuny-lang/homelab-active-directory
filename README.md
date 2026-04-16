@@ -99,3 +99,5 @@ This home lab demonstrates the deployment of a Windows Server Active Directory e
 ---
 
 *Built as part of an ongoing IT home lab portfolio.*
+
+![Network Diagram](diagram.png)

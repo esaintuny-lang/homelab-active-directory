@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AD + DHCP Lab Network Diagram</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;600;700&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #0a0e1a;
+    color: #e0e8ff;
+    font-family: 'Rajdhani', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    background-image:
+      radial-gradient(ellipse at 20% 20%, rgba(0,180,255,0.07) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 80%, rgba(100,60,255,0.07) 0%, transparent 60%);
+  }
+
+  h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #7dd3fc;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+
+  .subtitle {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem;
+    color: #4a6080;
+    letter-spacing: 0.1em;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+
+  .diagram {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    width: 100%;
+    max-width: 780px;
+  }
+
+  /* ── Cloud / Hypervisor banner ── */
+  .hypervisor-band {
+    width: 100%;
+    border: 1px solid #1e3a5f;
+    border-bottom: none;
+    border-radius: 12px 12px 0 0;
+    background: linear-gradient(135deg, #0d1b2e 0%, #0f2240 100%);
+    padding: 10px 24px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hypervisor-band .label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    color: #4a90d9;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .vbox-icon {
+    width: 18px; height: 18px;
+    background: #1565c0;
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.55rem;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.05em;
+    flex-shrink: 0;
+  }
+
+  /* ── Internal network row ── */
+  .network-row {
+    width: 100%;
+    background: #07111f;
+    border-left: 1px solid #1e3a5f;
+    border-right: 1px solid #1e3a5f;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    gap: 0;
+    position: relative;
+  }
+
+  .net-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem;
+    color: #38bdf8;
+    background: #051525;
+    border: 1px solid #1e4060;
+    border-radius: 4px;
+    padding: 4px 10px;
+    white-space: nowrap;
+    z-index: 2;
+  }
+
+  .wire {
+    flex: 1;
+    height: 2px;
+    background: repeating-linear-gradient(90deg, #1e4a70 0px, #1e4a70 8px, transparent 8px, transparent 14px);
+    position: relative;
+  }
+
+  .wire::after {
+    content: '';
+    position: absolute;
+    top: -4px;
+    right: 0;
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #38bdf8;
+    box-shadow: 0 0 8px #38bdf8;
+  }
+
+  .wire-left::after { left: 0; right: auto; }
+
+  /* ── Nodes row ── */
+  .nodes-row {
+    width: 100%;
+    background: linear-gradient(180deg, #07111f 0%, #0a0e1a 100%);
+    border: 1px solid #1e3a5f;
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    padding: 24px;
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* ── Node cards ── */
+  .node {
+    background: #0c1a2e;
+    border: 1px solid #1e4060;
+    border-radius: 10px;
+    padding: 20px 22px;
+    width: 220px;
+    position: relative;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .node:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 32px rgba(56,189,248,0.12);
+  }
+
+  .node.dc {
+    border-color: #0369a1;
+    box-shadow: 0 0 20px rgba(3,105,161,0.2);
+  }
+
+  .node.client {
+    border-color: #4338ca;
+    box-shadow: 0 0 20px rgba(67,56,202,0.2);
+  }
+
+  .node-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .node-icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.1rem;
+    flex-shrink: 0;
+  }
+
+  .dc .node-icon { background: linear-gradient(135deg, #0c4a7a, #0369a1); }
+  .client .node-icon { background: linear-gradient(135deg, #2d1b8a, #4338ca); }
+
+  .node-title {
+    font-size: 0.85rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    line-height: 1.2;
+  }
+
+  .dc .node-title { color: #7dd3fc; }
+  .client .node-title { color: #a5b4fc; }
+
+  .node-role {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.58rem;
+    color: #4a6080;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 14px;
+  }
+
+  .badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.58rem;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .badge.ad   { background: #0c3350; color: #38bdf8; border: 1px solid #0369a1; }
+  .badge.dhcp { background: #0c2b14; color: #4ade80; border: 1px solid #16a34a; }
+  .badge.dns  { background: #2d1b0e; color: #fb923c; border: 1px solid #c2410c; }
+  .badge.win  { background: #1e1b4b; color: #a5b4fc; border: 1px solid #4338ca; }
+  .badge.joined { background: #0c2b14; color: #4ade80; border: 1px solid #16a34a; }
+
+  .spec-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .spec-list li {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    color: #4a6080;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .spec-list li span.key {
+    color: #2a4a6a;
+    min-width: 52px;
+    flex-shrink: 0;
+  }
+
+  .spec-list li span.val {
+    color: #7dd3fc;
+  }
+
+  .client .spec-list li span.val { color: #a5b4fc; }
+
+  /* ── Legend ── */
+  .legend {
+    margin-top: 28px;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.62rem;
+    color: #4a6080;
+    letter-spacing: 0.08em;
+  }
+
+  .legend-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .footer {
+    margin-top: 36px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.62rem;
+    color: #1e3a5f;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>Active Directory &amp; DHCP Lab</h1>
+<p class="subtitle">// VirtualBox · mydomain.com · 172.16.0.0/16</p>
+
+<div class="diagram">
+
+  <!-- Hypervisor banner -->
+  <div class="hypervisor-band">
+    <div class="vbox-icon">VB</div>
+    <span class="label">VirtualBox — Internal Network Adapter</span>
+  </div>
+
+  <!-- Network wire row -->
+  <div class="network-row">
+    <div class="wire wire-left"></div>
+    <div class="net-label">🔗 &nbsp;Internal Network &nbsp;·&nbsp; 172.16.0.0/16</div>
+    <div class="wire"></div>
+  </div>
+
+  <!-- Node cards -->
+  <div class="nodes-row">
+
+    <div class="node dc">
+      <div class="node-header">
+        <div class="node-icon">🖥️</div>
+        <div>
+          <div class="node-title">Windows Server 2022</div>
+          <div class="node-role">Domain Controller</div>
+        </div>
+      </div>
+      <div class="badges">
+        <span class="badge ad">AD DS</span>
+        <span class="badge dhcp">DHCP</span>
+        <span class="badge dns">DNS</span>
+      </div>
+      <ul class="spec-list">
+        <li><span class="key">IP</span><span class="val">172.16.0.1</span></li>
+        <li><span class="key">Type</span><span class="val">Static</span></li>
+        <li><span class="key">Domain</span><span class="val">mydomain.com</span></li>
+        <li><span class="key">Scope</span><span class="val">.100 – .200</span></li>
+        <li><span class="key">DNS</span><span class="val">Self (172.16.0.1)</span></li>
+      </ul>
+    </div>
+
+    <div class="node client">
+      <div class="node-header">
+        <div class="node-icon">💻</div>
+        <div>
+          <div class="node-title">Windows Client</div>
+          <div class="node-role">Domain Member</div>
+        </div>
+      </div>
+      <div class="badges">
+        <span class="badge win">Windows</span>
+        <span class="badge joined">✓ Domain Joined</span>
+      </div>
+      <ul class="spec-list">
+        <li><span class="key">IP</span><span class="val">172.16.0.100–200</span></li>
+        <li><span class="key">Type</span><span class="val">DHCP Lease</span></li>
+        <li><span class="key">Domain</span><span class="val">mydomain.com</span></li>
+        <li><span class="key">DHCP</span><span class="val">172.16.0.1</span></li>
+        <li><span class="key">DNS</span><span class="val">172.16.0.1</span></li>
+      </ul>
+    </div>
+
+  </div>
+</div>
+
+<!-- Legend -->
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:#38bdf8"></div>Domain Controller / DHCP Server</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#818cf8"></div>Domain-Joined Client</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#4ade80"></div>DHCP Lease Active</div>
+  <div class="legend-item"><div class="legend-dot" style="background:#fb923c"></div>DNS Resolution via DC</div>
+</div>
+
+<div class="footer">// home lab · portfolio project · mydomain.com</div>
+
+</body>
+</html>

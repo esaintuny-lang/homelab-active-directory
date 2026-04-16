@@ -98,4 +98,4 @@ This home lab demonstrates the deployment of a Windows Server Active Directory e
 
 ---
 
-*Built as part of an ongoing IT home lab portfolio. See other projects for pfSense/VLAN segmentation, osTicket ticketing system, and Group Policy management.*
+*Built as part of an ongoing IT home lab portfolio.*

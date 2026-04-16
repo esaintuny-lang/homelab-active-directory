@@ -20,7 +20,7 @@ This home lab demonstrates the deployment of a Windows Server Active Directory e
 ---
 
 ## 🌐 Network Topology
-
+![Network Diagram](diagram.png)
 ```
 +------------------------------+       +-----------------------------+
 |   Windows Server 2019        |       |   Windows Client Machine    |
